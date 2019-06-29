@@ -3,45 +3,48 @@
 {% block title %}Книга{% endblock %}
 
 {% block content %}
-    <h1 class="mt-2">{{ book.title }}</h1>
-    <p>Год издания: {{ book.year }} Автор: {{ book.author.name }}</p>
-    <p>
-        {% if user.is_superuser %}
-            <a class="float-right" href="{% url 'webapp:book_update' book.pk %}">Редактировать</a>
-            <a class="float-right" href="{% url 'webapp:book_delete' book.pk %}">Удалить</a>
-            <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:add_book' book.pk %}" id="shelf">
-                {% csrf_token %}
-                <button type="submit">Добавить на полку</button>
-            </form>
-        {% endif %}
-    </p>
-
-    {% if book.image %}
-        <div class="img-wrapper">
-            <img class="w-50" src="{{ book.image.url }}" alt="{{ book.image.name }}">
-        </div>
-    {% endif %}
-    {% if book.file %}
-        <div class="card-body">
-            <div class="img-wrapper">
-                <a href="{{ book.file.url }}" download>Скачать книгу</a>
+    <div class="container">
+        <div class="card mt-4" style="width: 50rem;">
+            <div class="card-body">
+                {% if book.image %}
+                    <img class="card-img-top" src="{{ book.image.url }}" alt="{{ book.image.name }}">
+                {% endif %}
+                <h4 class="card-title mt-4 mb-4">{{ book.title }}</h4>
+                {% if user.is_authenticated %}
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:add_book' book.pk %}"
+                          id="shelf">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary btn-sm mb-3">Добавить на полку</button>
+                    </form>
+                {% endif %}
+                <h6 class="card-subtitle mb-2 text-muted">Год издания: {{ book.year }}</h6>
+                <p class="card-text">{{ book.description }}</p>
+                {% if book.file %}
+                    <a class="card-link" href="{{ book.file.url }}" download>Скачать книгу</a>
+                {% endif %}
+                {% if user.is_staff %}
+                    <a class="card-link" href="{% url 'webapp:book_update' book.pk %}">Редактировать</a>
+                    <a class="card-link" href="{% url 'webapp:book_delete' book.pk %}">Удалить</a>
+                {% endif %}
+                <hr>
+                <h5 class="card-title mt-4">Отзывы:</h5>
+                {% include 'review_list.html' with review_list=reviews %}
+                <form method="post" enctype="multipart/form-data" action="{% url 'webapp:review_create' book.id %}">
+                    {% csrf_token %}
+                    {% include 'partial/review_form.html' %}
+                </form>
             </div>
-        </div>
-    {% endif %}
-    <p class="mt-3 pre-spaces">{{ book.description }}</p>
 
-    {% include 'review_list.html' with review_list=reviews %}
-    <form method="post" enctype="multipart/form-data" action="{% url 'webapp:review_create' book.id %}">
-        {% csrf_token %}
-        {% include 'partial/review_form.html' %}
-    </form>
+        </div>
+
+    </div>
     <script language="JavaScript">
         $(document).ready(function () {
             $('#shelf button[type="submit"]').click(function (e) { // catch the form's submit event
                 e.preventDefault();
                 url = e.target.form.action;
                 csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
-                button = $('#shelf button[type="submit"]');
+                button = $("button", e.target.form).get()[0];
                 $.ajax({
                     data: {"csrfmiddlewaretoken": csrf},
                     type: e.target.form.method,
@@ -52,7 +55,7 @@
                     },
                     error: function (response) {
                         alert("Эта книга уже добавлена!")
-
+                        button.remove();
                     }
                 });
                 return false;

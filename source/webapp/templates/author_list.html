@@ -8,7 +8,9 @@
             <div class="card mt-4">
                 <div class="card-body">
                     {% if author.image %}
+                        <a href="{% url 'webapp:author_details' author.pk %}">
                         <img class="card-img-top" src="{{ author.image.url }}" alt="{{ author.image.name }}">
+                        </a>
                     {% endif %}
                     <h4 class="card-title mt-4 mb-4">{{ author.name }}</h4>
                     <h6 class="card-subtitle mb-2 text-muted">{{ author.date_of_birth }}

@@ -18,7 +18,7 @@ class UserDetailView(DetailView):
         return context
 
 
-class UserUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+class UserUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
     template_name = 'user_update.html'
     form_class = UserForm
@@ -45,7 +45,7 @@ class AuthorListView(ListView):
     queryset = Author.objects.filter(is_deleted=False)
 
 
-class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+class AuthorCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'author_create.html'
     form_class = AuthorForm
     model = Author
@@ -71,7 +71,7 @@ class AuthorDetailView(DetailView):
         return context
 
 
-class AuthorUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+class AuthorUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'author_update.html'
     form_class = AuthorForm
     model = Author
@@ -83,7 +83,7 @@ class AuthorUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
         return self.request.user.is_staff
 
 
-class AuthorDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+class AuthorDeleteView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'author_delete.html'
     model = Author
     success_url = reverse_lazy('webapp:author_list')
@@ -105,7 +105,7 @@ class BookListView(ListView):
     model = Book
 
 
-class BookCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+class BookCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'book_create.html'
     form_class = BookForm
     model = Book
@@ -130,7 +130,7 @@ class BookDetailView(DetailView):
         return context
 
 
-class BookUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+class BookUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'book_update.html'
     form_class = BookForm
     model = Book
@@ -142,7 +142,7 @@ class BookUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
         return self.request.user.is_staff
 
 
-class BookDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+class BookDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'book_delete.html'
     model = Book
     success_url = reverse_lazy('webapp:book_list')
@@ -159,7 +159,7 @@ class ReviewListView(ListView):
     model = Review
 
 
-class ReviewCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+class ReviewCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'partial/review_form.html'
     form_class = ReviewForm
     model = Review
@@ -182,8 +182,8 @@ class ReviewDetailView(DetailView):
     model = Review
 
 
-class ReviewUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
-    template_name = 'review_update.htmll'
+class ReviewUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    template_name = 'review_update.html'
     form_class = ReviewForm
     model = Review
 
@@ -194,7 +194,7 @@ class ReviewUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
         return self.request.user == self.get_object().author
 
 
-class ReviewDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+class ReviewDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     template_name = 'review_delete.html'
     model = Review
     success_url = reverse_lazy('webapp:book_list')
@@ -206,7 +206,7 @@ class ReviewDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
         return self.request.user == self.get_object().author
 
 
-class BookShelfView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+class BookShelfView(CreateView):
 
     def get(self, request, pk):
         return HttpResponseRedirect(reverse('webapp:book_detail', kwargs={'pk': pk}))
@@ -217,11 +217,6 @@ class BookShelfView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
 
         return HttpResponse(status=201)
 
-    def get_permission_required(self):
-        return None
-
-    def has_permission(self):
-        return self.request.user == self.get_object().user
 
 class BookShelfDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
 
