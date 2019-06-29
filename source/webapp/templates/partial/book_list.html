@@ -1,0 +1,6 @@
+
+{% block content %}
+    {% for book in book_list %}
+                <h4 class="card-title card-text"><a href="{% url 'webapp:book_details' book.pk %}" class="card-link">{{ book.title }}|{{ book.year }}</a></h4>
+    {% endfor %}
+{% endblock %}

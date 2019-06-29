@@ -1,0 +1,14 @@
+{% block content %}
+    {% for review in review_list %}
+        <div class="card mt-3">
+
+            {{ review.text }}
+            <div class="card-footer">
+                <p class="card-text">{{ review.author }} | {{ review.created_at }} {% if user == review.author %}
+                    <a class="float-right" href="{% url 'webapp:review_update'  review.pk %}">Редактировать</a>
+                    <a href="{% url 'webapp:review_delete'  review.pk %}">Удалить</a>
+                {% endif %}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

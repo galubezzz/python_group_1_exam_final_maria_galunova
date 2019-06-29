@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Удалить отзыв{% endblock %}
+{% block content %}
+    <h1>Удаление отзыва</h1>
+    <h5>Вы уверены, что хотите удалить отзыв?</h5>
+    <form action="{% url 'webapp:review_delete' review.pk %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn, btn-primary">Удалить</button>
+    </form>
+{% endblock %}

@@ -36,7 +36,7 @@ class Review(models.Model):
     book = models.ForeignKey(Book, related_name="reviews", blank=True, verbose_name="Книга", on_delete=models.CASCADE)
 
     def get_absolute_url(self):
-        return reverse('webapp:article_detail', kwargs={'pk': self.article.id})
+        return reverse('webapp:book_details', kwargs={'pk': self.book.id})
 
     def __str__(self):
         return f"{self.pk}. {self.text} | {self.author.username}"
