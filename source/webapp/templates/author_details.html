@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}Статья{% endblock %}
+{% block title %}Автор{% endblock %}
 
 {% block content %}
     <h1 class="mt-2">{{ author.name }}</h1>
     <p>{{ author.date_of_birth }} - {{ author.date_of_death }}</p>
     <p>
-        {% if user == article.author %}
-            <a class="float-right" href="">Редактировать</a>
-            <a class="float-right" href="">Удалить</a>
+        {% if user %}
+            <a class="float-right" href="{% url 'webapp:author_update' author.pk %}">Редактировать</a>
+            <a class="float-right" href="{% url 'webapp:author_delete' author.pk %}">Удалить</a>
         {% endif %}
     </p>
     {% if author.image %}

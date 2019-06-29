@@ -9,12 +9,12 @@
   </div>
     <div class="form-group">
     <label for="date_of_birth">{{ name.label }}</label>
-    <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="{{ author.date_of_birth|date:'d-m-Y' }}" placeholder="Дата рождения">
+    <input type="date" class="form-control" name="date_of_birth" id="date_of_birth" value="{{ author.date_of_birth|date:"d-m-Y" }}" placeholder="Дата рождения">
     {% for error in form.date_of_birth.errors %}<p class="text-danger mt-1">{{ error }}</p>{% endfor %}
     </div>
     <div class="form-group">
     <label for="date_of_death">{{ name.label }}</label>
-    <input type="date" class="form-control" name="date_of_death" id="date_of_death" value="{{ author.date_of_death|date:'d-m-Y' }}" placeholder="Дата смерти">
+    <input type="date" class="form-control" name="date_of_death" id="date_of_death" value="{{ author.date_of_death }}" placeholder="Дата смерти">
     {% for error in form.date_of_death.errors %}<p class="text-danger mt-1">{{ error }}</p>{% endfor %}
     </div>
   <div class="form-group">

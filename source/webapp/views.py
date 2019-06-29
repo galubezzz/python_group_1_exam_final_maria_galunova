@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from webapp.forms import UserForm, AuthorForm
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from webapp.models import Author
@@ -48,6 +48,31 @@ class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+
 class AuthorDetailView(DetailView):
     template_name = 'author_details.html'
     model = Author
+
+
+class AuthorUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'author_update.html'
+    form_class = AuthorForm
+    model = Author
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff
+
+
+class AuthorDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'author_delete.html'
+    model = Author
+    success_url = reverse_lazy('webapp:author_list')
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff

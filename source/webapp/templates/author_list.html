@@ -7,6 +7,8 @@
         <div class="card mt-3">
             <div class="card-header">
                 <h1 class="card-title card-text"><a href="{% url 'webapp:author_details' author.id %}" class="card-link">{{ author.name }}</a></h1>
+                    <a class="float-right" href="{% url 'webapp:author_update' author.pk %}">Редактировать</a>
+                    <a class="float-right" href="{% url 'webapp:author_delete' author.pk %}">Удалить</a>
             </div>
             {% if author.image %}
                 <div class="card-body">
