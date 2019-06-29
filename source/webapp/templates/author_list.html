@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Авторы{% endblock %}
+
+{% block content %}
+    {% for author in author_list %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h1 class="card-title card-text"><a href=# class="card-link">{{ author.name }}</a></h1>
+            </div>
+            {% if author.image %}
+                <div class="card-body">
+                    <div class="img-wrapper">
+                        <img class="card-img w-50" src="{{ author.image.url }}" alt="{{ author.image.name }}">
+                    </div>
+                </div>
+            {% endif %}
+            <div class="card-footer">
+                <p class="card-text">{{ author.name }} | {{ author.date_of_birth }}
+                    {% if user == article.author %}
+                        <a class="float-right" href=#>Удалить</a>
+                        <a class="float-right mr-1" href=#>Редактировать |</a>
+                    {% endif %}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
