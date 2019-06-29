@@ -1,14 +1,18 @@
 {% block content %}
     {% for review in review_list %}
-        <div class="card mt-3">
-
-            {{ review.text }}
-            <div class="card-footer">
-                <p class="card-text">{{ review.author }} | {{ review.created_at }} {% if user == review.author %}
-                    <a class="float-right" href="{% url 'webapp:review_update'  review.pk %}">Редактировать</a>
-                    <a href="{% url 'webapp:review_delete'  review.pk %}">Удалить</a>
-                {% endif %}</p>
-            </div>
+        <div class="card mt-3 p-1">
+            <h5 class="card-title">
+                {{ review.text }}
+            </h5>
+            <p class="card-text">
+                <a href="{% url "webapp:user_details" review.author.pk %}">{{ review.author }}</a> | {{ review.created_at }}
+            </p>
+            <p>
+                {% if user == review.author %}
+                    <a class="card-link" href="{% url 'webapp:review_update'  review.pk %}">Редактировать</a>
+                    <a class="card-link" href="{% url 'webapp:review_delete'  review.pk %}">Удалить</a>
+                {% endif %}
+            </p>
         </div>
     {% endfor %}
 {% endblock %}

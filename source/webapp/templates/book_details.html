@@ -22,16 +22,18 @@
                 {% if book.file %}
                     <a class="card-link" href="{{ book.file.url }}" download>Скачать книгу</a>
                 {% endif %}
-                {% if user.is_staff %}
+                {% if user.is_authenticated %}
                     <a class="card-link" href="{% url 'webapp:book_update' book.pk %}">Редактировать</a>
                     <a class="card-link" href="{% url 'webapp:book_delete' book.pk %}">Удалить</a>
                 {% endif %}
                 <hr>
                 <h5 class="card-title mt-4">Отзывы:</h5>
                 {% include 'review_list.html' with review_list=reviews %}
-                <form method="post" enctype="multipart/form-data" action="{% url 'webapp:review_create' book.id %}">
+                {% if user.is_authenticated %}
+                    <form method="post" enctype="multipart/form-data" action="{% url 'webapp:review_create' book.id %}">
                     {% csrf_token %}
                     {% include 'partial/review_form.html' %}
+                {% endif %}
                 </form>
             </div>
 
