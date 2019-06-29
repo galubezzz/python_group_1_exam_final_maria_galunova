@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from webapp.forms import UserForm
+from webapp.forms import UserForm, AuthorForm
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -37,3 +37,12 @@ class UserUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
 class AuthorListView(ListView):
     template_name = 'author_list.html'
     model = Author
+
+class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'author_create.html'
+    form_class = AuthorForm
+    model = Author
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
