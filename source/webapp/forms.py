@@ -12,6 +12,8 @@ class UserForm(forms.ModelForm):
 class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
+        date_of_birth = forms.DateField(widget=forms.SelectDateWidget())
+        date_of_death = forms.DateField(widget=forms.SelectDateWidget())
         fields = ['name', 'date_of_birth', 'date_of_death', 'image', 'biography']
 
 

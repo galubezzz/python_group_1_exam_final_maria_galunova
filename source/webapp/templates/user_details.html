@@ -10,5 +10,35 @@
             {% if userinfo.user == request.user %}
                 <li class="list-group-item"><a href="{% url 'webapp:user_update' request.user.pk %}" class="nav-link">Редактировать</a></li>
             {% endif %}
-    </div>
+            <h2 class="mt-2">Книги</h2>
+            {% for book in books %}
+                <h4 class="card-title card-text"><a href="{% url 'webapp:book_details' book.book.pk %}" class="card-link">{{ book.book.title }}|{{ book.book.year }}</a></h4>
+                <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:remove_book' book.book.pk %}" id="shelf">
+                    {% csrf_token %}
+                    <button type="submit">Удалить</button>
+                </form>
+            {% endfor %}
+            </div>
+    <script language="JavaScript">
+    $(document).ready(function() {
+        $('#shelf button[type="submit"]').click(function(e) { // catch the form's submit event
+            e.preventDefault();
+            url = e.target.form.action;
+            csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
+
+            $.ajax({
+                data: {"csrfmiddlewaretoken": csrf},
+                type: e.target.form.method,
+                url: url,
+                success: function(response) { // on success..
+                    alert("success!")
+                },
+                error: function(response) {
+                    alert("error!")
+                }
+            });
+            return false;
+        });
+    })
+</script>
 {% endblock %}

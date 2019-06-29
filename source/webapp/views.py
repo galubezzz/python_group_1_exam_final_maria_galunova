@@ -5,12 +5,18 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from webapp.models import Author, Book, Review
-
+from webapp.models import Author, Book, Review, BookShelf
+from django.http import HttpResponse
 
 class UserDetailView(DetailView):
     template_name = 'user_details.html'
     model = User
+
+    def get_context_data(self, **kwargs):
+        context = super(UserDetailView, self).get_context_data(**kwargs)
+        context['books'] = self.object.shelf.all()
+        return context
+
 
 
 class UserUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
@@ -37,6 +43,7 @@ class UserUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
 class AuthorListView(ListView):
     template_name = 'author_list.html'
     model = Author
+    queryset = Author.objects.filter(is_deleted=False)
 
 
 class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
@@ -81,6 +88,11 @@ class AuthorDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
 
     def has_permission(self):
         return self.request.user.is_staff
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.soft_delete()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class BookListView(ListView):
@@ -177,3 +189,38 @@ class ReviewDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
     def has_permission(self):
         return self.request.user == self.get_object().author
 
+
+class BookShelfView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+
+    def get(self, request, pk):
+        return HttpResponseRedirect(reverse('webapp:book_detail', kwargs={'pk': pk}))
+
+    def post(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        BookShelf.objects.create(book=book, user=self.request.user)
+
+        return HttpResponse(status=201)
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user == self.get_object().user
+
+class BookShelfDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+
+    def get(self, request, pk):
+        return HttpResponseRedirect(reverse('webapp:book_detail', kwargs={'pk': pk}))
+
+    def post(self, request, pk):
+        book = get_object_or_404(Book, pk=pk)
+        book_on_shelf = BookShelf.objects.get(book=book, user=self.request.user)
+        book_on_shelf.delete()
+
+        return HttpResponse(status=201)
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user == self.get_object().user

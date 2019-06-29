@@ -9,6 +9,11 @@ class Author(models.Model):
     date_of_death = models.DateField(blank=True, null=True, verbose_name='Дата смерти')
     biography = models.TextField(max_length=5000, null=True, blank=True, verbose_name='Биография')
     image = models.ImageField(upload_to='author_images', blank=True, null=True, verbose_name="Фотография")
+    is_deleted = models.BooleanField(default=False)
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
 
     def __str__(self):
         return self.name
@@ -44,3 +49,16 @@ class Review(models.Model):
     class Meta:
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
+
+
+class BookShelf(models.Model):
+    user = models.ForeignKey(User, related_name="shelf", verbose_name="Пользователь", on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, related_name="shelf", blank=True, verbose_name="Книга", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Книги на полке"
+        verbose_name_plural = "Книги на полке"
+        unique_together = ('user', 'book')
+
+    def __str__(self):
+        return self.book.title
