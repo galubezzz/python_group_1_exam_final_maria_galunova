@@ -16,12 +16,11 @@
             <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:remove_book' book.book.pk %}"
                   id="shelf">
                 {% csrf_token %}
-                <div class="card-title card-text" id="{{ book.book.pk }}">
-                    <a href="{% url 'webapp:book_details' book.book.pk %}" class="card-link">{{ book.book.title }}|{{ book.book.year }}</a>
+                <div>
+                    <a href="{% url 'webapp:book_details' book.book.pk %}"
+                       class="card-link">{{ book.book.title }}|{{ book.book.year }}</a>
                     <button type="submit">Удалить</button>
                 </div>
-
-
             </form>
         {% endfor %}
     </div>
@@ -31,8 +30,8 @@
                 e.preventDefault();
                 url = e.target.form.action;
                 csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
-                h4 = $("div", e.target.form).get()[0];
-                console.log(h4);
+                div = $("div", e.target.form).get()[0];
+                console.log(div);
                 console.log(e.target.form);
                 $.ajax({
                     data: {"csrfmiddlewaretoken": csrf},
@@ -40,7 +39,7 @@
                     url: url,
                     success: function (response) { // on success..
                         alert("success!")
-                        h4.remove();
+                        div.remove();
                     },
                     error: function (response) {
                         alert("error!")

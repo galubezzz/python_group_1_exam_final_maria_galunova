@@ -6,15 +6,16 @@
     <h1 class="mt-2">{{ book.title }}</h1>
     <p>Год издания: {{ book.year }} Автор: {{ book.author.name }}</p>
     <p>
-        {% if user %}
+        {% if user.is_superuser %}
             <a class="float-right" href="{% url 'webapp:book_update' book.pk %}">Редактировать</a>
             <a class="float-right" href="{% url 'webapp:book_delete' book.pk %}">Удалить</a>
+            <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:add_book' book.pk %}" id="shelf">
+                {% csrf_token %}
+                <button type="submit">Добавить на полку</button>
+            </form>
         {% endif %}
     </p>
-    <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:add_book' book.pk %}" id="shelf">
-        {% csrf_token %}
-        <button type="submit">Добавить на полку</button>
-    </form>
+
     {% if book.image %}
         <div class="img-wrapper">
             <img class="w-50" src="{{ book.image.url }}" alt="{{ book.image.name }}">
@@ -35,25 +36,27 @@
         {% include 'partial/review_form.html' %}
     </form>
     <script language="JavaScript">
-    $(document).ready(function() {
-        $('#shelf button[type="submit"]').click(function(e) { // catch the form's submit event
-            e.preventDefault();
-            url = e.target.form.action;
-            csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
+        $(document).ready(function () {
+            $('#shelf button[type="submit"]').click(function (e) { // catch the form's submit event
+                e.preventDefault();
+                url = e.target.form.action;
+                csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
+                button = $('#shelf button[type="submit"]');
+                $.ajax({
+                    data: {"csrfmiddlewaretoken": csrf},
+                    type: e.target.form.method,
+                    url: url,
+                    success: function (response) { // on success..
+                        alert("Вы добавили эту книгу!")
+                        button.remove();
+                    },
+                    error: function (response) {
+                        alert("Эта книга уже добавлена!")
 
-            $.ajax({
-                data: {"csrfmiddlewaretoken": csrf},
-                type: e.target.form.method,
-                url: url,
-                success: function(response) { // on success..
-                    alert("Вы добавили эту книгу!")
-                },
-                error: function(response) {
-                    alert("Эта книга уже добавлена!")
-                }
+                    }
+                });
+                return false;
             });
-            return false;
-        });
-    })
-</script>
+        })
+    </script>
 {% endblock %}

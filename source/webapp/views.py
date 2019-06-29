@@ -18,7 +18,6 @@ class UserDetailView(DetailView):
         return context
 
 
-
 class UserUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = User
     template_name = 'user_update.html'
@@ -54,6 +53,12 @@ class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff
 
 
 class AuthorDetailView(DetailView):
@@ -106,8 +111,13 @@ class BookCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     model = Book
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff
 
 
 class BookDetailView(DetailView):
@@ -159,6 +169,12 @@ class ReviewCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
         form.instance.book = book
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user
 
 
 class ReviewDetailView(DetailView):

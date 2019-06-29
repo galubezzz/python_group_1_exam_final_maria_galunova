@@ -1,6 +1,41 @@
-
 {% block content %}
     {% for book in book_list %}
-                <h4 class="card-title card-text"><a href="{% url 'webapp:book_details' book.pk %}" class="card-link">{{ book.title }}|{{ book.year }}</a></h4>
+
+        <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:add_book' book.pk %}" id="shelf">
+            {% csrf_token %}
+            <div>
+                <p><a href="{% url 'webapp:book_details' book.pk %}"
+                                                    class="card-link mb-0">{{ book.title }}|{{ book.year }}</a></p>
+                {% if user %}
+                    <button class="btn btn-outline-secondary btn-sm mb-3" type="submit" id="{{ book.pk }}">Добавить на полку</button>
+                {% endif %}
+            </div>
+        </form>
     {% endfor %}
+    <script language="JavaScript">
+        $(document).ready(function () {
+            $('#shelf button[type="submit"]').click(function (e) { // catch the form's submit event
+                e.preventDefault();
+                url = e.target.form.action;
+                csrf = $("input[name='csrfmiddlewaretoken']", e.target.form).val();
+                div = $("div", e.target.form).get()[0];
+                button = $("button", e.target.form).get()[0];
+                console.log(div);
+                $.ajax({
+                    data: {"csrfmiddlewaretoken": csrf},
+                    type: e.target.form.method,
+                    url: url,
+                    success: function (response) { // on success..
+                        alert("Вы добавили эту книгу!")
+                        div.remove();
+                    },
+                    error: function (response) {
+                        alert("Эта книга уже добавлена!")
+                        button.remove();
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
 {% endblock %}

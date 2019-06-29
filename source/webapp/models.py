@@ -33,6 +33,9 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('webapp:book_details', kwargs={'pk': self.pk})
+
 
 class Review(models.Model):
     text = models.TextField(max_length=1000, null=True, blank=True, verbose_name="Текст отзыва")
