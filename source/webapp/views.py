@@ -38,6 +38,7 @@ class AuthorListView(ListView):
     template_name = 'author_list.html'
     model = Author
 
+
 class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     template_name = 'author_create.html'
     form_class = AuthorForm
@@ -46,3 +47,7 @@ class AuthorCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+class AuthorDetailView(DetailView):
+    template_name = 'author_details.html'
+    model = Author
