@@ -1,28 +1,38 @@
 {% extends 'base.html' %}
 {% block title %}Пользователь {% endblock %}
 {% block content %}
-    <div>
-        <h5 class="card-title">Имя пользователя: {{ user }}</h5>
-        <p>Имя: {{ user.first_name }}</p>
-        <p>Фамилия: {{ user.last_name }}</p>
-        <p>Почта: {{ user.email }}</p>
-
-        {% if user == request.user %}
-            <li class="list-group-item"><a href="{% url 'webapp:user_update' request.user.pk %}" class="nav-link">Редактировать</a>
-            </li>
-        {% endif %}
-        <h2 class="mt-2">Книги</h2>
-        {% for book in books %}
-            <form method="POST" enctype="multipart/form-data" action="{% url 'webapp:remove_book' book.book.pk %}"
-                  id="shelf">
-                {% csrf_token %}
-                <div>
-                    <a href="{% url 'webapp:book_details' book.book.pk %}"
-                       class="card-link">{{ book.book.title }}|{{ book.book.year }}</a>
-                    <button type="submit">Удалить</button>
-                </div>
-            </form>
-        {% endfor %}
+    <div class="container">
+        <div class="card mt-4" style="width: 50rem;">
+            <div class="card-body">
+                <h4 class="card-title mt-4 mb-4">Пользователь: {{ user }}</h4>
+                <p class="card-text">
+                <p>Имя: {{ user.first_name }}</p>
+                <p>Фамилия: {{ user.last_name }}</p>
+                <p>Почта: {{ user.email }}</p>
+                </p>
+                {% if user == request.user %}
+                    <a class="card-link" href="{% url 'webapp:user_update' request.user.pk %}">Редактировать</a>
+                {% endif %}
+                <hr/>
+                <h5 class="card-title mt-4">Книги:</h5>
+                {% for book in books %}
+                    {% if user.is_authenticated %}
+                        <form method="POST" enctype="multipart/form-data"
+                              action="{% url 'webapp:remove_book' book.book.pk %}"
+                              id="shelf">
+                            {% csrf_token %}
+                            <div>
+                                <a href="{% url 'webapp:book_details' book.book.pk %}"
+                                   class="card-link">{{ book.book.title }}</a> {{ book.book.author.name }}
+                                    {% if user == request.user %}
+                                    <button class="btn btn-outline-secondary btn-sm mb-3" type="submit">Удалить</button>
+                                    {% endif %}
+                            </div>
+                        </form>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
     <script language="JavaScript">
         $(document).ready(function () {
