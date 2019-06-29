@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Книги{% endblock %}
+
+{% block content %}
+    {% for book in book_list %}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h1 class="card-title card-text"><a href="{% url 'webapp:book_details' book.pk %}" class="card-link">{{ book.title }}</a></h1>
+                    <a class="float-right" href="{% url 'webapp:book_update' book.pk %}">Редактировать</a>
+                    <a class="float-right" href="{% url 'webapp:book_delete' book.pk %}">Удалить</a>
+            </div>
+            {% if book.image %}
+                <div class="card-body">
+                    <div class="img-wrapper">
+                        <img class="card-img w-50" src="{{ book.image.url }}" alt="{{ book.image.name }}">
+                    </div>
+                </div>
+            {% endif %}
+            {% if book.file %}
+                <div class="card-body">
+                    <div class="img-wrapper">
+                        <a href="{{ book.file.url }}" download>Скачать книгу</a>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="card-footer">
+                <p class="card-text">Год издания: {{ book.year }} Автор: {{ book.author.name }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

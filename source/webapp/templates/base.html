@@ -24,8 +24,14 @@
             <li class="nav-item">
                 <a href="{% url 'webapp:author_list' %}" class="nav-link">На главную</a>
             </li>
+             <li class="nav-item">
+                <a href="{% url 'webapp:book_list' %}" class="nav-link">Книги</a>
+            </li>
             <li class="nav-item">
                 <a href="{% url 'webapp:author_create' %}" class="nav-link">Добавить автора</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'webapp:book_create' %}" class="nav-link">Добавить книгу</a>
             </li>
             {% block menu %}{% endblock %}
         </ul>

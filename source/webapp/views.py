@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from webapp.forms import UserForm, AuthorForm
+from webapp.forms import UserForm, AuthorForm, BookForm
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from webapp.models import Author
+from webapp.models import Author, Book
 
 
 class UserDetailView(DetailView):
@@ -70,6 +70,50 @@ class AuthorDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
     template_name = 'author_delete.html'
     model = Author
     success_url = reverse_lazy('webapp:author_list')
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff
+
+
+class BookListView(ListView):
+    template_name = 'book_list.html'
+    model = Book
+
+
+class BookCreateView(CreateView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'book_create.html'
+    form_class = BookForm
+    model = Book
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class BookDetailView(DetailView):
+    template_name = 'book_details.html'
+    model = Book
+
+
+class BookUpdateView(UpdateView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'book_update.html'
+    form_class = BookForm
+    model = Book
+
+    def get_permission_required(self):
+        return None
+
+    def has_permission(self):
+        return self.request.user.is_staff
+
+
+class BookDeleteView(DeleteView, LoginRequiredMixin, PermissionRequiredMixin):
+    template_name = 'book_delete.html'
+    model = Book
+    success_url = reverse_lazy('webapp:book_list')
 
     def get_permission_required(self):
         return None
